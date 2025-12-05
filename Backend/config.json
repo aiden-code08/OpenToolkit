@@ -1,0 +1,19 @@
+{
+    "low_bitrate_actions": {
+        "screen_text": 2500,
+        "screen_animated_video": 1000
+    },
+    "main_scene": {
+        "scene_uuid": "900d36a5-6f74-4d32-8d02-fb6d3d488237",
+        "sources": {
+            "ingest_uuid": "",
+            "chat_uuid": "",
+            "desktop_uuid": "",
+            "low_bitrate": {
+                "folder": "5030b7c1-646d-494e-afba-8502415ccab7",
+                "text_uuid": "a481e73b-306d-4ab9-83ce-fe654150a3ac",
+                "text_input": "e3ce8c95-c3c4-4dd2-b34b-915045f0eb94"
+            }
+        }
+    }
+}

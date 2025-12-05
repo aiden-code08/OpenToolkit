@@ -1,41 +1,29 @@
 import { OBSWebSocket } from "obs-websocket-js";
 import * as fs from "fs";
 import os from 'os';
-
-import { Config } from "./lib/types.js";
 import NodeMediaServer from "node-media-server";
 import path from "path";
-import { BaseSession } from "./session.js";
-
 class OpenToolkit {
-    private obs = new OBSWebSocket();
-    private showingLBRT = false;
-    private config!: Config;
-
-    private sceneUuid!: string;
-    private LBRT_itemId!: number;
-
-    private updateTimer: NodeJS.Timeout | null = null;
-
-    private lastBytes: Map<string, number> = new Map()
-    private lastTime: Map<string, number> = new Map()
-
-    private sessions: Map<String, BaseSession> = new Map()
-
-    private mediaServer!: NodeMediaServer;
-
+    obs = new OBSWebSocket();
+    showingLBRT = false;
+    config;
+    sceneUuid;
+    LBRT_itemId;
+    updateTimer = null;
+    lastBytes = new Map();
+    lastTime = new Map();
+    sessions = new Map();
+    mediaServer;
     constructor() {
         this.initialize();
     }
-
-    private async initialize() {
+    async initialize() {
         this.loadConfig();
         await this.connectOBS();
         await this.cacheSceneInfo();
         this.startRTMPServer();
     }
-
-    private startRTMPServer() {
+    startRTMPServer() {
         this.mediaServer = new NodeMediaServer({
             bind: "127.0.0.1",
             logType: 0,
@@ -66,131 +54,104 @@ class OpenToolkit {
                 allow_origin: '*'
             }
         });
-        this.mediaServer.run()
-
-        this.mediaServer.on('postPublish', (session: BaseSession) => {
-            console.log("[RTMP] Stream Started:", session.id)
-            this.updateLoop(session)
+        this.mediaServer.run();
+        this.mediaServer.on('postPublish', (session) => {
+            console.log("[RTMP] Stream Started:", session.id);
+            this.updateLoop(session);
         });
-
         this.mediaServer.on("bitrateUpdate", (data) => {
-            console.clear()
+            console.clear();
             console.log(`Session ${data.sessionId} (${data.streamPath})`);
             console.log(`    Incoming: ${Math.round(data.inBps / 1000)} Kbps, Outgoing: ${Math.round(data.outBps / 1000)} Kbps`);
         });
-
-        this.mediaServer.on("sessionUpdate", (session: BaseSession) => {
-            this.sessions.set(session.id, session)
-        })
-
-        this.mediaServer.on('donePublish', (session: BaseSession) => {
+        this.mediaServer.on("sessionUpdate", (session) => {
+            this.sessions.set(session.id, session);
+        });
+        this.mediaServer.on('donePublish', (session) => {
             console.log("[RTMP] Stream ended:", session.id);
-            if (this.updateTimer) clearInterval(this.updateTimer)
+            if (this.updateTimer)
+                clearInterval(this.updateTimer);
         });
     }
-
-    private loadConfig() {
-        this.config = JSON.parse(fs.readFileSync("config.json", "utf-8")) as Config;
+    loadConfig() {
+        this.config = JSON.parse(fs.readFileSync("config.json", "utf-8"));
     }
-
-    private async getToken() {
+    async getToken() {
         const response = await fetch('http://localhost:8000/api/v1/login', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ username: 'admin', password: 'admin123' })
         });
-        return JSON.parse(await response.text()).data.token
+        return JSON.parse(await response.text()).data.token;
     }
-
-    private async connectOBS() {
-        if (this.obs.identified) return;
-
+    async connectOBS() {
+        if (this.obs.identified)
+            return;
         console.log("Connecting to OBS WebSocket...");
-
         try {
             await this.obs.connect("ws://localhost:4455");
             console.log("Connected to OBS.");
-        } catch (err) {
+        }
+        catch (err) {
             console.error("Failed to connect to OBS:", err);
             setTimeout(() => this.connectOBS(), 2000);
         }
     }
-
-    private async cacheSceneInfo() {
+    async cacheSceneInfo() {
         const { scenes } = await this.obs.call("GetSceneList");
-
-        const mainScene = scenes.find(
-            (s) => s.sceneUuid === this.config.main_scene.scene_uuid
-        );
-
-        if (!mainScene) throw new Error("Main scene not found in OBS");
-
+        const mainScene = scenes.find((s) => s.sceneUuid === this.config.main_scene.scene_uuid);
+        if (!mainScene)
+            throw new Error("Main scene not found in OBS");
         //@ts-ignore
         this.sceneUuid = mainScene.sceneUuid;
-
         const { sceneItems } = await this.obs.call("GetSceneItemList", {
             sceneUuid: this.sceneUuid,
         });
-
-        const low_bitrate_folder = sceneItems.find((i) => i.sourceUuid === this.config.main_scene.sources.low_bitrate.folder)
-
+        const low_bitrate_folder = sceneItems.find((i) => i.sourceUuid === this.config.main_scene.sources.low_bitrate.folder);
         // try {
         //     const lbf_list = this.obs.call("GetSceneItemList", {
         //         sceneUuid: low_bitrate_folder.sourceUuid
         //     });
         // } catch { }
-
         const lbf_list = await this.obs.call("GetGroupSceneItemList", {
             sceneUuid: low_bitrate_folder.sourceUuid
         });
-
-        const low_bitrate_text = lbf_list.sceneItems.find(({ sourceUuid }) => sourceUuid === this.config.main_scene.sources.low_bitrate.text_uuid)
-
+        const low_bitrate_text = lbf_list.sceneItems.find(({ sourceUuid }) => sourceUuid === this.config.main_scene.sources.low_bitrate.text_uuid);
         this.LBRT_itemId = low_bitrate_text.sceneItemId;
-
         console.log("Scene cached. LBRT Scene Item ID:", this.LBRT_itemId);
     }
-
-    private updateLoop(session: BaseSession) {
+    updateLoop(session) {
         // if (this.updateTimer) clearInterval(this.updateTimer);
-
         // this.sessions.set(session.id, session);
         // const sessionKey = session.id;
-
         // this.updateTimer = setInterval(async () => {
         //     try {
-
         //     } catch (err) {
         //         console.error("Update loop error:", err);
         //     }
         // }, 200);
     }
-
-    private async showLBRT() {
-        if (this.showingLBRT) return;
-
+    async showLBRT() {
+        if (this.showingLBRT)
+            return;
         await this.obs.call("SetSceneItemEnabled", {
             sceneUuid: this.sceneUuid,
             sceneItemId: this.LBRT_itemId,
             sceneItemEnabled: true,
         });
-
         this.showingLBRT = true;
         console.log("[LBRT] SHOW");
     }
-
-    private async hideLBRT() {
-        if (!this.showingLBRT) return;
-
+    async hideLBRT() {
+        if (!this.showingLBRT)
+            return;
         await this.obs.call("SetSceneItemEnabled", {
             sceneUuid: this.sceneUuid,
             sceneItemId: this.LBRT_itemId,
             sceneItemEnabled: false,
         });
-
         this.showingLBRT = false;
         console.log("[LBRT] HIDE");
     }
 }
-
 new OpenToolkit();

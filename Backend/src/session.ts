@@ -3,8 +3,7 @@
 import { Socket } from "net";
 import { Request, Response } from "express";
 import WebSocket from "ws";
-import { AVPacket } from "../core/avpacket.js";
-import BroadcastServer from "../server/broadcast_server.js";
+import { AVPacket, BroadcastServer } from "./lib/types.js";
 import { IncomingMessage } from "obs-websocket-js";
 
 export interface JWTUser {

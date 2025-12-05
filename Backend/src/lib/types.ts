@@ -105,16 +105,16 @@ export interface Config {
             chat_uuid: string
             desktop_uuid: string,
             low_bitrate: {
+                folder: string,
                 text_uuid: string,
                 text_input: string
             }
         },
-        bitrates: {
-            text: number,
-            clips: number
-        }
     },
-    active_connection: Connection,
+    low_bitrate_actions: {
+        screen_text: number,
+        screen_animated_video: number
+    },
 }
 
 export interface Logger {
