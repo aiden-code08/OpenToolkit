@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.BitrateManager = void 0;
+exports.BitrateManager = exports.bitrate = void 0;
+exports.bitrate = 0;
 class BitrateManager {
     obs;
     config;
@@ -26,7 +27,8 @@ class BitrateManager {
         const arr = this.last.get(streamId);
         if (!arr || !arr.length)
             return 0;
-        return arr.reduce((a, b) => a + b) / arr.length / 1000;
+        exports.bitrate = arr.reduce((a, b) => a + b) / arr.length / 1000;
+        return exports.bitrate;
     }
     async update(streamId) {
         const avg = this.getAvg(streamId);

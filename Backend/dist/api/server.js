@@ -39,15 +39,19 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Server = void 0;
 const express_1 = __importDefault(require("express"));
 const fs = __importStar(require("fs"));
+const auth_js_1 = require("./middleware/auth.js");
+const get_js_1 = require("./routers/get.js");
+const login_js_1 = require("./routers/login.js");
 class Server {
     app = (0, express_1.default)();
     router = express_1.default.Router();
     constructor(toolkit) {
         this.app.use(express_1.default.json());
         this.router = express_1.default.Router();
-        this.app.use();
-        // this.app.use("/api/v1", () => { this.router });
-        // this.router.use("/get/", )
+        this.app.use("/api/v1", this.router);
+        this.router.use(auth_js_1.Authenticate);
+        this.router.use("/get", get_js_1.getRouter);
+        this.router.post("/login", login_js_1.handleLogin);
         this.app.listen(3000, (error) => {
             if (!error) {
                 console.log("Listening on port config");
