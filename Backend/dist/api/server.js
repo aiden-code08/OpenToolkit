@@ -43,12 +43,11 @@ class Server {
     app = (0, express_1.default)();
     router = express_1.default.Router();
     constructor(toolkit) {
-        this.app.use("/api/v1", () => { this.router; });
-        this.router.use("*", (req, res, next) => {
-            console.log(req.params);
-            next();
-        });
-        this.router.get("/fetch/bitrate/:sessionid");
+        this.app.use(express_1.default.json());
+        this.router = express_1.default.Router();
+        this.app.use();
+        // this.app.use("/api/v1", () => { this.router });
+        // this.router.use("/get/", )
         this.app.listen(3000, (error) => {
             if (!error) {
                 console.log("Listening on port config");
