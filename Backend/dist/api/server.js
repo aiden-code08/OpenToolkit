@@ -36,7 +36,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Server = void 0;
+exports.Server = exports.db = void 0;
 const express_1 = __importDefault(require("express"));
 const fs = __importStar(require("fs"));
 const auth_js_1 = require("./middleware/auth.js");
@@ -44,6 +44,8 @@ const get_js_1 = require("./routers/get.js");
 const login_js_1 = require("./routers/login.js");
 const set_js_1 = require("./routers/set.js");
 const logger_js_1 = require("../utils/logger.js");
+const database_1 = require("../utils/database");
+exports.db = new database_1.Database(true);
 class Server {
     app = (0, express_1.default)();
     router = express_1.default.Router();
@@ -57,6 +59,7 @@ class Server {
          * --------------------
          */
         this.router.use(auth_js_1.Authenticate);
+        // this.router.use(Ratelimit);
         // this.router.use(Permissions);
         // this.router.use(Logging)
         this.router.use("/get", get_js_1.getRouter);

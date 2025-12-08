@@ -48,6 +48,16 @@ class RTMPServer {
                 port: 8000,
                 allow_origin: "*",
             },
+            trans: {
+                ffmpeg: '/usr/bin/ffmpeg',
+                tasks: [
+                    {
+                        app: 'live',
+                        hls: true,
+                        hlsFlags: '[hls_time=2:hls_list_size=6:hls_flags=delete_segments]'
+                    }
+                ]
+            }
         });
         this.server.run();
         this.server.on("prePublish", session => this.onPreStart(session));

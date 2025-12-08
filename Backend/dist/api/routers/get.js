@@ -22,7 +22,6 @@ exports.getRouter.get("/scenes/:sessionid", async (req, res) => {
             code: 6
         });
     const scene_list = await OpenToolkit_1.obs.obs.call("GetSceneList");
-    console.log(scene_list);
     return res.status(200).json(scene_list);
 });
 exports.getRouter.get("/stream/alive", async (req, res) => {
@@ -31,4 +30,15 @@ exports.getRouter.get("/stream/alive", async (req, res) => {
 exports.getRouter.get("/stream/timealive", async (req, res) => {
     //@ts-ignore
     res.status(200).json({ time: (Date.now() - OpenToolkit_1.startTime) });
+});
+exports.getRouter.get("/preview/screenshot", async (req, res) => {
+    const scene = (await OpenToolkit_1.obs.obs.call("GetSceneList")).currentProgramSceneUuid;
+    const screenshotData = await OpenToolkit_1.obs.obs.call("GetSourceScreenshot", {
+        sourceUuid: scene,
+        imageFormat: "png",
+        imageWidth: 960,
+        imageHeight: 540,
+        imageCompressionQuality: 60
+    });
+    res.status(200).json({ image: screenshotData.imageData });
 });

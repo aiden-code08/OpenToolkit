@@ -2,9 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Authenticate = Authenticate;
 exports.readHeader = readHeader;
-const database_1 = require("../../utils/database");
-const logger_1 = require("../utils/logger");
-const db = new database_1.Database();
+const server_1 = require("../server");
 function Authenticate(req, res, next) {
     const skipPaths = [
         "/login"
@@ -19,9 +17,10 @@ function Authenticate(req, res, next) {
     const authToken = readHeader(authHeader);
     if (!authToken)
         return res.status(401).json({ message: "Malformed auth header", code: 4 });
-    const validToken = db.getAccountByToken(authToken);
-    (0, logger_1.log)(validToken);
+    const validToken = server_1.db.getAccountByToken(authToken);
     if (!validToken)
+        return res.status(401).json({ message: "Invalid Token", code: 5 });
+    if (validToken.token !== authToken)
         return res.status(400).json({ message: "Invalid Token", code: 5 });
     next();
 }
