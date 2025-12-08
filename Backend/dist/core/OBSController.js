@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.OBSController = void 0;
 const obs_websocket_js_1 = require("obs-websocket-js");
 const logger_js_1 = require("../utils/logger.js");
+const config_js_1 = require("../utils/config.js");
 class OBSController {
     config;
     obs = new obs_websocket_js_1.OBSWebSocket();
@@ -11,23 +12,21 @@ class OBSController {
     LBRT_itemId;
     LBRV_itemId;
     LBRV_index;
+    obsConfig = (0, config_js_1.loadOBSConfig)();
     reconnectRetries = 0;
+    connected = false;
+    reconnecting = false;
     constructor(config) {
         this.config = config;
     }
     async connect() {
-        if (this.obs.identified)
-            return;
-        await this.obs.connect("ws://localhost:4455");
-        if (!this.obs.identified) {
-            setTimeout(() => this.connect(), 5000);
-            (0, logger_js_1.error)("Error Connecting to OBS, retrying in 5 seconds");
-            this.reconnectRetries++;
-            if (this.reconnectRetries === 5)
-                throw new Error("Unable to connect to OBS!");
-        }
-        else {
-            (0, logger_js_1.log)("Connected to OBS");
+        while (!this.connected) {
+            this.reconnecting = true;
+            this.obs.once("ConnectionOpened", () => this.connected = true);
+            await this.obs.connect();
+            if (this.connected)
+                (0, logger_js_1.log)("Connection to OBS Websocket successful."), this.reconnecting = false;
+            await new Promise((res) => setInterval(res, 500));
         }
     }
     async cacheSceneInfo() {

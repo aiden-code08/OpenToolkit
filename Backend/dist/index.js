@@ -5,6 +5,7 @@ const OpenToolkit_js_1 = require("./core/OpenToolkit.js");
 async function main() {
     const toolkit = new OpenToolkit_js_1.OpenToolkit();
     await toolkit.initialize();
+    toolkit.startRTMP();
     new server_js_1.Server(toolkit);
 }
 main();

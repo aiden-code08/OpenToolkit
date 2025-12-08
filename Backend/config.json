@@ -23,5 +23,12 @@
     "api": {
         "host": "127.0.0.1",
         "port": 3000
+    },
+    "obs": {
+        "websocket": {
+            "password": "987654321",
+            "authentication": true,
+            "url": "ws://localhost:4455"
+        }
     }
 }

@@ -25,3 +25,10 @@ exports.getRouter.get("/scenes/:sessionid", async (req, res) => {
     console.log(scene_list);
     return res.status(200).json(scene_list);
 });
+exports.getRouter.get("/stream/alive", async (req, res) => {
+    res.status(200).json({ alive: !!OpenToolkit_1.startTime });
+});
+exports.getRouter.get("/stream/timealive", async (req, res) => {
+    //@ts-ignore
+    res.status(200).json({ time: (Date.now() - OpenToolkit_1.startTime) });
+});

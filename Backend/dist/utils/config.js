@@ -34,7 +34,11 @@ var __importStar = (this && this.__importStar) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.loadConfig = loadConfig;
+exports.loadOBSConfig = loadOBSConfig;
 const fs = __importStar(require("fs"));
 function loadConfig() {
     return JSON.parse(fs.readFileSync("config.json", "utf-8")).toolkit;
+}
+function loadOBSConfig() {
+    return JSON.parse(fs.readFileSync("config.json", "utf-8")).obs;
 }

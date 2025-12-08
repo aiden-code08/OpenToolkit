@@ -43,6 +43,7 @@ const auth_js_1 = require("./middleware/auth.js");
 const get_js_1 = require("./routers/get.js");
 const login_js_1 = require("./routers/login.js");
 const set_js_1 = require("./routers/set.js");
+const logger_js_1 = require("../utils/logger.js");
 class Server {
     app = (0, express_1.default)();
     router = express_1.default.Router();
@@ -50,13 +51,20 @@ class Server {
         this.app.use(express_1.default.json());
         this.router = express_1.default.Router();
         this.app.use("/api/v1", this.router);
+        /**
+         * --------------------
+         * >    Middleware
+         * --------------------
+         */
         this.router.use(auth_js_1.Authenticate);
+        // this.router.use(Permissions);
+        // this.router.use(Logging)
         this.router.use("/get", get_js_1.getRouter);
         this.router.use("/set", set_js_1.setRouter);
         this.router.post("/login", login_js_1.handleLogin);
         this.app.listen(3000, (error) => {
             if (!error) {
-                console.log("Listening on port config");
+                (0, logger_js_1.log)("Listening on port config");
                 JSON.parse(fs.readFileSync("config.json", "utf-8"));
             }
         });

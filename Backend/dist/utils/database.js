@@ -13,9 +13,40 @@ class Database {
             this.initialize();
     }
     initialize() {
-        this.database.prepare(`CREATE TABLE IF NOT EXISTS accounts (id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT NOT NULL, password TEXT NOT NULL, token TEXT NOT NULL);`).run();
-        this.database.prepare(`CREATE TABLE IF NOT EXISTS sessions (sessionid TEXT NOT NULL, streamkey TEXT NOT NULL);`).run();
-        this.database.prepare(`CREATE TABLE IF NOT EXISTS streamkeys (key TEXT NOT NULL);`).run();
+        this.database.prepare(`
+            CREATE TABLE IF NOT EXISTS accounts (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                username TEXT NOT NULL,
+                password TEXT NOT NULL,
+                token TEXT NOT NULL,
+                roleid TEXT NOT NULL,
+                permissionid TEXT
+            );
+        `).run();
+        this.database.prepare(`
+            CREATE TABLE IF NOT EXISTS sessions (
+                sessionid TEXT NOT NULL,
+                streamkey TEXT NOT NULL
+            );
+        `).run();
+        this.database.prepare(`
+            CREATE TABLE IF NOT EXISTS streamkeys (
+                key TEXT NOT NULL
+            );
+        `).run();
+        this.database.prepare(`
+            CREATE TABLE IF NOT EXISTS roles (
+                roleid INTEGER PRIMARY KEY AUTOINCREMENT,
+                name TEXT NOT NULL,
+                permissionid INTEGER NOT NULL
+            );
+        `).run();
+        this.database.prepare(`
+            CREATE TABLE IF NOT EXISTS permissions (
+                permission INTEGER PRIMARY KEY AUTOINCREMENT,
+                roleid TEXT NOT NULL
+            );
+        `).run();
     }
     /**
      * ----------------------------------
@@ -40,8 +71,8 @@ class Database {
      * > Account Permissions
      * ----------------------------------
      */
-    // public getPermissions(): PermissionSet[] {
-    // }
+    getRoles() {
+    }
     /**
      * ----------------------------------
      * > Sessions
