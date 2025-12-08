@@ -1,21 +1,21 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.OpenToolkit = exports.sessions = void 0;
+exports.OpenToolkit = exports.obs = exports.sessions = void 0;
 const OBSController_js_1 = require("./OBSController.js");
 const BitrateManager_js_1 = require("./BitrateManager.js");
 const RTMPServer_js_1 = require("./RTMPServer.js");
 const config_js_1 = require("../utils/config.js");
 const logger_js_1 = require("../utils/logger.js");
 exports.sessions = new Map();
+const config = (0, config_js_1.loadConfig)();
+exports.obs = new OBSController_js_1.OBSController(config);
 class OpenToolkit {
-    config = (0, config_js_1.loadConfig)();
     rtmp;
-    obs = new OBSController_js_1.OBSController(this.config);
-    bitrate = new BitrateManager_js_1.BitrateManager(this.obs, this.config);
+    bitrate = new BitrateManager_js_1.BitrateManager(exports.obs, config);
     constructor() { }
     async initialize() {
-        await this.obs.connect();
-        await this.obs.cacheSceneInfo();
+        await exports.obs.connect();
+        await exports.obs.cacheSceneInfo();
         this.startRTMP();
     }
     startRTMP() {

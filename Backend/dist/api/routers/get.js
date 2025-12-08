@@ -21,7 +21,7 @@ exports.getRouter.get("/scenes/:sessionid", async (req, res) => {
             message: "Session not found",
             code: 6
         });
-    const scene_list = await session.obs.obs.call("GetSceneList");
+    const scene_list = await OpenToolkit_1.obs.obs.call("GetSceneList");
     console.log(scene_list);
     return res.status(200).json(scene_list);
 });
