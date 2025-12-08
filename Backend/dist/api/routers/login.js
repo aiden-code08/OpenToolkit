@@ -14,7 +14,7 @@ const handleLogin = (req, res) => {
         return res.status(401).json({ message: "Missing username from body", code: 1 });
     if (!login.password)
         return res.status(401).json({ message: "Missing password from body", code: 2 });
-    encodeUserToToken(login);
+    res.status(200).json(encodeUserToToken(login));
 };
 exports.handleLogin = handleLogin;
 function encodeUserToToken(login) {

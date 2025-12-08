@@ -15,10 +15,11 @@ class Database {
     initialize() {
         this.database.prepare(`CREATE TABLE IF NOT EXISTS accounts (id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT NOT NULL, password TEXT NOT NULL, token TEXT NOT NULL);`).run();
         this.database.prepare(`CREATE TABLE IF NOT EXISTS sessions (sessionid TEXT NOT NULL, streamkey TEXT NOT NULL);`).run();
+        this.database.prepare(`CREATE TABLE IF NOT EXISTS streamkeys (key TEXT NOT NULL);`).run();
     }
     /**
      * ----------------------------------
-     * >            Accounts
+     * > Accounts
      * ----------------------------------
      */
     getAccounts() {
@@ -34,16 +35,16 @@ class Database {
         const query = this.database.prepare("SELECT * FROM accounts WHERE token = ?;");
         return query.get(token);
     }
-    // /**
-    //  * ----------------------------------
-    //  * >       Account Permissions
-    //  * ----------------------------------
-    //  */
+    /**
+     * ----------------------------------
+     * > Account Permissions
+     * ----------------------------------
+     */
     // public getPermissions(): PermissionSet[] {
     // }
     /**
      * ----------------------------------
-     * >            Sessions
+     * > Sessions
      * ----------------------------------
      */
     getSessions() {

@@ -1,14 +1,10 @@
 {
-  "name": "backend",
+  "name": "open-toolkit-backend",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node ."
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": "",
   "dependencies": {
     "better-sqlite3": "^12.5.0",
     "dotenv": "^17.2.3",
@@ -20,7 +16,6 @@
     "obs-websocket-js": "^5.0.7",
     "os": "^0.1.2",
     "path": "^0.12.7",
-    "sqlite3": "^5.1.7",
     "ws": "^8.18.3"
   },
   "devDependencies": {

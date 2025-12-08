@@ -8,11 +8,13 @@ const node_media_server_1 = __importDefault(require("node-media-server"));
 const os_1 = __importDefault(require("os"));
 const path_1 = __importDefault(require("path"));
 class RTMPServer {
+    onPreStart;
     onStart;
     onStop;
     onBitrate;
     server;
-    constructor(onStart, onStop, onBitrate) {
+    constructor(onPreStart, onStart, onStop, onBitrate) {
+        this.onPreStart = onPreStart;
         this.onStart = onStart;
         this.onStop = onStop;
         this.onBitrate = onBitrate;
@@ -48,6 +50,7 @@ class RTMPServer {
             },
         });
         this.server.run();
+        this.server.on("prePublish", session => this.onPreStart(session));
         this.server.on("postPublish", session => this.onStart(session));
         this.server.on("donePublish", session => this.onStop(session));
         this.server.on("bitrateUpdate", data => this.onBitrate(data));

@@ -1,6 +1,8 @@
 Backend/node_modules/
 Backend/tsconfig.json
 Backend/src/
+Backend/toolkit.db
+Backend/.env
 
 lowbitrate.mp4
 

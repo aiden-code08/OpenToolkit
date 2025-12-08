@@ -45,6 +45,7 @@ class BitrateManager {
             this.delayedHideVideo();
     }
     async forceShowText() {
+        // log("SHOW [text]")
         if (this.hideTimerText)
             clearTimeout(this.hideTimerText);
         if (!this.showLBRT) {
@@ -53,6 +54,7 @@ class BitrateManager {
         }
     }
     delayedHideText() {
+        // log("HIDE [text]")
         if (!this.hideTimerText) {
             this.hideTimerText = setTimeout(async () => {
                 this.showLBRT = false;
@@ -62,6 +64,7 @@ class BitrateManager {
         }
     }
     async forceShowVideo() {
+        // log("SHOW [video]")
         if (this.hideTimerVideo)
             clearTimeout(this.hideTimerVideo);
         if (!this.showLBRV) {
@@ -70,6 +73,7 @@ class BitrateManager {
         }
     }
     delayedHideVideo() {
+        // log("HIDE [video]")
         if (!this.hideTimerVideo) {
             this.hideTimerVideo = setTimeout(async () => {
                 this.showLBRV = false;

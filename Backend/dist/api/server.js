@@ -42,6 +42,7 @@ const fs = __importStar(require("fs"));
 const auth_js_1 = require("./middleware/auth.js");
 const get_js_1 = require("./routers/get.js");
 const login_js_1 = require("./routers/login.js");
+const set_js_1 = require("./routers/set.js");
 class Server {
     app = (0, express_1.default)();
     router = express_1.default.Router();
@@ -51,6 +52,7 @@ class Server {
         this.app.use("/api/v1", this.router);
         this.router.use(auth_js_1.Authenticate);
         this.router.use("/get", get_js_1.getRouter);
+        this.router.use("/set", set_js_1.setRouter);
         this.router.post("/login", login_js_1.handleLogin);
         this.app.listen(3000, (error) => {
             if (!error) {
