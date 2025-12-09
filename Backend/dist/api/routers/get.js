@@ -42,3 +42,10 @@ exports.getRouter.get("/preview/screenshot", async (req, res) => {
     });
     res.status(200).json({ image: screenshotData.imageData });
 });
+exports.getRouter.get("/sessions", async (req, res) => {
+    const sessionIds = [];
+    for (const [id, session] of OpenToolkit_1.sessions.entries()) {
+        sessionIds.push({ sessionId: id, bitrate: session.bitrate.getAvg(id) });
+    }
+    res.status(200).json({ sessions: sessionIds });
+});

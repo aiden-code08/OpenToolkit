@@ -24,6 +24,7 @@ class OpenToolkit {
             (0, logger_js_1.log)("START", session.id);
         }, session => {
             exports.startTime = null;
+            exports.sessions.delete(session.id);
             (0, logger_js_1.log)("STOP", session.id);
         }, data => this.handleBitrate(data));
         this.rtmp.start();
