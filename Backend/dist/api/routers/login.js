@@ -9,8 +9,13 @@ exports.decodeVerifyToken = decodeVerifyToken;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const dotenv_1 = __importDefault(require("dotenv"));
 const server_1 = require("../server");
+const ratelimit_1 = require("../utils/ratelimit");
+const loginRatelimit = new ratelimit_1.RateLimiter(5, 60000);
 dotenv_1.default.config();
 function handleLogin(req, res) {
+    loginRatelimit.add(req.ip);
+    if (!loginRatelimit.allow(req.ip))
+        return res.status(429).json({ message: "Rate Limited" });
     const login = req.body;
     if (!login.username)
         return res.status(401).json({ message: "Missing username from body", code: 1 });

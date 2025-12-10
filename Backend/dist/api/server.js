@@ -44,7 +44,9 @@ const get_js_1 = require("./routers/get.js");
 const login_js_1 = require("./routers/login.js");
 const set_js_1 = require("./routers/set.js");
 const logger_js_1 = require("../utils/logger.js");
+const ratelimit_js_1 = require("./middleware/ratelimit.js");
 const database_1 = require("../utils/database");
+const config_js_1 = require("./utils/config.js");
 exports.db = new database_1.Database(true);
 class Server {
     app = (0, express_1.default)();
@@ -59,15 +61,16 @@ class Server {
          * --------------------
          */
         this.router.use(auth_js_1.Authenticate);
-        // this.router.use(Ratelimit);
+        this.router.use(ratelimit_js_1.Ratelimit);
         // this.router.use(Permissions);
         // this.router.use(Logging)
         this.router.use("/get", get_js_1.getRouter);
         this.router.use("/set", set_js_1.setRouter);
         this.router.post("/login", login_js_1.handleLogin);
-        this.app.listen(3000, (error) => {
+        const config = (0, config_js_1.loadConfig)();
+        this.app.listen(config.port, (error) => {
             if (!error) {
-                (0, logger_js_1.log)("Listening on port config");
+                (0, logger_js_1.log)(`Listening on port: ${config.port}`);
                 JSON.parse(fs.readFileSync("config.json", "utf-8"));
             }
         });

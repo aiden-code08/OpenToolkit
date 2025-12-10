@@ -36,5 +36,5 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.loadConfig = loadConfig;
 const fs = __importStar(require("fs"));
 function loadConfig() {
-    return JSON.parse(fs.readFileSync("config.json", "utf-8")).api;
+    return JSON.parse(fs.readFileSync("./config.json", "utf-8")).api;
 }
